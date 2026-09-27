@@ -12,6 +12,7 @@
             <button name="back" class="Nx6\PedidosYa\Block\Adminhtml\PromoProfile\Edit\BackButton"/>
             <button name="delete" class="Nx6\PedidosYa\Block\Adminhtml\PromoProfile\Edit\DeleteButton"/>
             <button name="run" class="Nx6\PedidosYa\Block\Adminhtml\PromoProfile\Edit\RunButton"/>
+            <button name="save_and_run" class="Nx6\PedidosYa\Block\Adminhtml\PromoProfile\Edit\SaveAndRunButton"/>
             <button name="save" class="Nx6\PedidosYa\Block\Adminhtml\PromoProfile\Edit\SaveButton"/>
         </buttons>
         <namespace>nx6_pedidosya_promo_profile_form</namespace>

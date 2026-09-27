@@ -50,7 +50,7 @@ fresh installs are unaffected.
      `price` → `attribute:price`, `active` → `attribute:status`,
      `quantity` → the MSI **stock** or **source** feeding this store.
    * **Save**.
-3. **Run it once** — the **Run** button on the profile (or **Run Now** in the grid).
+3. **Run it once** — **Save and Run** / **Run** on the profile (or **Run Now** in the grid).
    Check the *Last Run Status* on the profile and `var/log/pedidosya.log`.
 4. **Schedule it** — add a system cron line per profile (see
    [Scheduling](#scheduling)):
@@ -223,8 +223,10 @@ Both paths use the same code (`Model\Export\ExportRunner`): generate → archive
 
 ### From the admin
 
-* **Products/Promo Profiles grid** → row action **Run Now** (confirm dialog, POST).
-* **Profile edit page** → **Run** button (next to Save).
+* **Products/Promo Profiles grid** → row action **Run Now** (confirm dialog, POST); returns to the grid.
+* **Profile edit page** → **Run** button (confirm dialog); stays on the edit page.
+* **Profile edit page** → **Save and Run** button: saves the form, then runs the export in the
+  same request (only if the save succeeded) and returns to the grid.
 
 ### From the CLI
 

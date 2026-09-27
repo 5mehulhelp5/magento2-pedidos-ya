@@ -12,6 +12,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Nx6\PedidosYa\Controller\Adminhtml\Products\Profile;
+use Nx6\PedidosYa\Model\Export\ExportRunner;
 use Nx6\PedidosYa\Model\ExportColumns;
 use Nx6\PedidosYa\Model\ProductsProfile;
 use Nx6\PedidosYa\Model\ProductsProfileFactory;
@@ -23,7 +24,8 @@ class Save extends Profile implements HttpPostActionInterface
         private readonly ProductsProfileFactory $productsProfileFactory,
         private readonly ExportColumns $exportColumns,
         private readonly EncryptorInterface $encryptor,
-        private readonly DataPersistorInterface $dataPersistor
+        private readonly DataPersistorInterface $dataPersistor,
+        private readonly ExportRunner $exportRunner
     ) {
         parent::__construct($context);
     }
@@ -69,6 +71,11 @@ class Save extends Profile implements HttpPostActionInterface
             $productsProfile->save();
             $this->messageManager->addSuccessMessage(__('You saved the products profile.'));
 
+            // "Save and Run" posts save_and_run=1 alongside the form data.
+            if (!empty($data['save_and_run'])) {
+                $this->runExport($productsProfile);
+            }
+
             if ($this->getRequest()->getParam('back')) {
                 return $resultRedirect->setPath('*/*/edit', ['id' => $productsProfile->getId()]);
             }
@@ -85,6 +92,16 @@ class Save extends Profile implements HttpPostActionInterface
         $this->dataPersistor->set('nx6_pedidosya_products_profile', $data);
 
         return $resultRedirect->setPath('*/*/edit', $id !== 0 ? ['id' => $id] : []);
+    }
+
+    private function runExport(ProductsProfile $productsProfile): void
+    {
+        try {
+            $result = $this->exportRunner->run($productsProfile);
+            $this->messageManager->addSuccessMessage(__('Export ran successfully: %1', $result));
+        } catch (\Throwable $throwable) {
+            $this->messageManager->addErrorMessage(__('Export failed: %1', $throwable->getMessage()));
+        }
     }
 
     private function applyMapping(ProductsProfile $productsProfile, array $data): void

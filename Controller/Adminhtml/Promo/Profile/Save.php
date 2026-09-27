@@ -13,6 +13,7 @@ use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\Filter\DateTime as DateTimeFilter;
 use Nx6\PedidosYa\Controller\Adminhtml\Promo\Profile;
+use Nx6\PedidosYa\Model\Export\ExportRunner;
 use Nx6\PedidosYa\Model\ExportColumns;
 use Nx6\PedidosYa\Model\PromoProfile;
 use Nx6\PedidosYa\Model\PromoProfileFactory;
@@ -31,7 +32,8 @@ class Save extends Profile implements HttpPostActionInterface
         private readonly ExportColumns $exportColumns,
         private readonly EncryptorInterface $encryptor,
         private readonly DateTimeFilter $dateTimeFilter,
-        private readonly DataPersistorInterface $dataPersistor
+        private readonly DataPersistorInterface $dataPersistor,
+        private readonly ExportRunner $exportRunner
     ) {
         parent::__construct($context);
     }
@@ -75,6 +77,11 @@ class Save extends Profile implements HttpPostActionInterface
             $promoProfile->save();
             $this->messageManager->addSuccessMessage(__('You saved the promo profile.'));
 
+            // "Save and Run" posts save_and_run=1 alongside the form data.
+            if (!empty($data['save_and_run'])) {
+                $this->runExport($promoProfile);
+            }
+
             if ($this->getRequest()->getParam('back')) {
                 return $resultRedirect->setPath('*/*/edit', ['id' => $promoProfile->getId()]);
             }
@@ -91,6 +98,16 @@ class Save extends Profile implements HttpPostActionInterface
         $this->dataPersistor->set('nx6_pedidosya_promo_profile', $data);
 
         return $resultRedirect->setPath('*/*/edit', $id !== 0 ? ['id' => $id] : []);
+    }
+
+    private function runExport(PromoProfile $promoProfile): void
+    {
+        try {
+            $result = $this->exportRunner->run($promoProfile);
+            $this->messageManager->addSuccessMessage(__('Export ran successfully: %1', $result));
+        } catch (\Throwable $throwable) {
+            $this->messageManager->addErrorMessage(__('Export failed: %1', $throwable->getMessage()));
+        }
     }
 
     private function applyMapping(PromoProfile $promoProfile, array $data): void

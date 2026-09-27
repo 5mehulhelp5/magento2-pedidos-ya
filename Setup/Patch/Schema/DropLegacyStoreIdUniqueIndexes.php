@@ -45,9 +45,11 @@ class DropLegacyStoreIdUniqueIndexes implements SchemaPatchInterface
                 if ($index['INDEX_TYPE'] !== 'unique') {
                     continue;
                 }
+
                 if ($index['COLUMNS_LIST'] !== ['store_id']) {
                     continue;
                 }
+
                 // MySQL refuses to drop the index backing a foreign key unless another
                 // index on the same column already exists, so add the replacement first.
                 // indexExists() isn't part of AdapterInterface (only Magento's core Pdo\Mysql

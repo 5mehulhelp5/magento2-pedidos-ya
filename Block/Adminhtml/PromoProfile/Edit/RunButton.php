@@ -28,7 +28,7 @@ class RunButton extends GenericButton implements ButtonProviderInterface
         return [
             'label' => __('Run'),
             'class' => 'primary',
-            'on_click' => $this->getOnClick($this->getUrl('*/*/run', ['id' => $id])),
+            'on_click' => $this->getOnClick($this->getUrl('*/*/run', ['id' => $id, 'back' => 'edit'])),
             'sort_order' => 80,
         ];
     }

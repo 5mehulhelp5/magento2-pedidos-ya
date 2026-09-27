@@ -44,6 +44,11 @@ class Run extends Profile implements HttpPostActionInterface
             $this->messageManager->addErrorMessage(__('Export failed: %1', $throwable->getMessage()));
         }
 
-        return $resultRedirect->setPath('*/*/edit', ['id' => $id]);
+        // The grid's "Run Now" lands back on the grid; the edit page's Run button asks to stay put.
+        if ($this->getRequest()->getParam('back') === 'edit') {
+            return $resultRedirect->setPath('*/*/edit', ['id' => $id]);
+        }
+
+        return $resultRedirect->setPath('*/*/');
     }
 }
