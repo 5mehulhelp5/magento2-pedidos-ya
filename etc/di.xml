@@ -111,4 +111,17 @@
             <argument name="logger" xsi:type="object">Nx6\PedidosYa\Logger\Logger</argument>
         </arguments>
     </type>
+    <virtualType name="Nx6\PedidosYa\Model\Data\ReEncryptorList\SftpCredentialsReEncryptor" type="Magento\EncryptionKey\Model\Data\ReEncryptorList\ReEncryptor">
+        <arguments>
+            <argument name="description" xsi:type="string">Re-encrypts 'sftp_password' column in the PedidosYa products/promo profile tables.</argument>
+            <argument name="handler" xsi:type="object">Nx6\PedidosYa\Model\Data\ReEncryptorList\SftpCredentialsReEncryptor\Handler</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\EncryptionKey\Model\Data\ReEncryptorList">
+        <arguments>
+            <argument name="reEncryptors" xsi:type="array">
+                <item name="nx6_pedidosya_sftp_credentials" xsi:type="object">Nx6\PedidosYa\Model\Data\ReEncryptorList\SftpCredentialsReEncryptor</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
