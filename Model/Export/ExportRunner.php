@@ -37,10 +37,12 @@ class ExportRunner
         try {
             $batches = $this->generator->generate($profile);
             $credentials = $this->credentialsBuilder->fromProfile($profile);
+            $type = $profile instanceof PromoProfile ? 'promo' : 'products';
+            $vendorId = (string) $profile->getVendorId();
 
             $summaries = [];
             foreach ($batches as $batch) {
-                $this->archiver->archive($batch['path'], $batch['filename']);
+                $this->archiver->archive($batch['path'], $batch['filename'], $type, $vendorId);
                 $this->sftpClient->uploadFile($batch['path'], $credentials, $batch['filename']);
                 $summaries[] = sprintf('%d rows uploaded to %s/%s', $batch['rows'], $credentials->remotePath, $batch['filename']);
             }

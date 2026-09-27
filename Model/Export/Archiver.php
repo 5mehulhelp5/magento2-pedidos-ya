@@ -13,9 +13,10 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Psr\Log\LoggerInterface;
 
 /**
- * Saves a copy of every generated export file to var/export/peya as a timestamped .tar.gz,
- * when enabled via Stores > Configuration. Purely a record-keeping step - it never touches the
- * working file the SFTP upload actually reads, and a failure here never fails the export run.
+ * Saves a copy of every generated export file to var/export/peya/{type}/{vendor_id} as a
+ * timestamped .tar.gz, when enabled via Stores > Configuration. Purely a record-keeping step -
+ * it never touches the working file the SFTP upload actually reads, and a failure here never
+ * fails the export run.
  */
 class Archiver
 {
@@ -33,7 +34,7 @@ class Archiver
     ) {
     }
 
-    public function archive(string $sourcePath, string $filename): void
+    public function archive(string $sourcePath, string $filename, string $type, string $vendorId): void
     {
         if (!$this->scopeConfig->isSetFlag(self::XML_PATH_ENABLED)) {
             return;
@@ -43,11 +44,12 @@ class Archiver
 
         try {
             $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $varDir->create(self::ARCHIVE_DIR);
+            $archiveDir = self::ARCHIVE_DIR . '/' . $type . '/' . $vendorId;
+            $varDir->create($archiveDir);
 
             $baseName = pathinfo($filename, PATHINFO_FILENAME);
             $timestamp = $this->dateTime->date('Ymd_His');
-            $tarPath = $varDir->getAbsolutePath(self::ARCHIVE_DIR . '/' . $baseName . '_' . $timestamp . '.tar');
+            $tarPath = $varDir->getAbsolutePath($archiveDir . '/' . $baseName . '_' . $timestamp . '.tar');
             $tarGzPath = $tarPath . '.gz';
 
             $this->tar->pack($sourcePath, $tarPath);

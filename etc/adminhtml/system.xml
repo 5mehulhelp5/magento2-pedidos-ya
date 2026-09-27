@@ -16,7 +16,7 @@
 
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Archive Export Files</label>
-                    <comment>When enabled, every generated Products/Promo Profile export file is also saved to var/export/peya as a timestamped .tar.gz, in addition to being uploaded via SFTP.</comment>
+                    <comment>When enabled, every generated Products/Promo Profile export file is also saved to var/export/peya/{products|promo}/{vendor_id} as a timestamped .tar.gz, in addition to being uploaded via SFTP.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
