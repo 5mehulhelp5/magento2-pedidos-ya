@@ -113,7 +113,7 @@
                 comment="Campaign Status Source"/>
         <column xsi:type="varchar" name="campaign_status_default" nullable="true" length="255"
                 comment="Campaign Status Default"/>
-        <column xsi:type="text" name="included_skus" nullable="true" comment="Included SKUs (one per line or comma-separated)"/>
+        <column xsi:type="mediumtext" name="included_skus" nullable="true" comment="Included SKUs (one per line or comma-separated)"/>
         <column xsi:type="smallint" name="use_all_enabled" unsigned="true" nullable="false" default="0"
                 comment="Use All Enabled Products Instead Of Included SKUs"/>
         <column xsi:type="decimal" name="markdown_percent" scale="4" precision="12" nullable="true"
